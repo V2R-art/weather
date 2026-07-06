@@ -1,0 +1,396 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Plus | أجواء برو</title>
+    <!-- استدعاء خط تجوال العربي الأنيق من جوجل -->
+    <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&display=swap" rel="stylesheet">
+    
+    <style>
+        /* ================= المتغيرات والإعدادات الأساسية ================= */
+        :root {
+            --bg-dark: #05050A;
+            --bg-light-dark: #141226;
+            --primary-color: #FFCC00;
+            --text-main: #FFFFFF;
+            --text-muted: #8E8E93;
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Tajawal', sans-serif;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-dark), var(--bg-light-dark));
+            color: var(--text-main);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* ================= شريط التنقل (Navbar) ================= */
+        nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 5%;
+            background: rgba(5, 5, 10, 0.8);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            position: fixed;
+            width: 100%;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid var(--glass-border);
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo span {
+            color: var(--primary-color);
+        }
+
+        .nav-btn {
+            background: var(--primary-color);
+            color: #000;
+            padding: 10px 25px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 700;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-2px) scale(1.05);
+            box-shadow: 0 6px 20px rgba(255, 204, 0, 0.5);
+        }
+
+        /* ================= القسم الرئيسي (Hero Section) ================= */
+        .hero {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 150px 5% 100px;
+            min-height: 100vh;
+            gap: 50px;
+        }
+
+        .hero-content {
+            flex: 1;
+            animation: fadeInRight 1s ease forwards;
+        }
+
+        .hero-content h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 20px;
+            font-weight: 800;
+        }
+
+        .hero-content p {
+            font-size: 1.2rem;
+            color: var(--text-muted);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .download-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 15px;
+            background: linear-gradient(45deg, #FFCC00, #FF9500);
+            color: #000;
+            padding: 15px 40px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-size: 1.2rem;
+            font-weight: 800;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 149, 0, 0.4);
+            border: none;
+            cursor: pointer;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px) scale(1.02);
+            box-shadow: 0 15px 40px rgba(255, 149, 0, 0.6);
+        }
+
+        .download-btn svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        /* هاتف وهمي يعرض الشاشة الرئيسية للتطبيق */
+        .phone-mockup {
+            width: 300px;
+            height: 600px;
+            background: var(--bg-dark);
+            border-radius: 40px;
+            border: 8px solid #333;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .phone-mockup::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            width: 150px;
+            height: 25px;
+            background: #333;
+            border-bottom-left-radius: 15px;
+            border-bottom-right-radius: 15px;
+            z-index: 2;
+        }
+
+        .phone-mockup img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ================= قسم المميزات (Features) ================= */
+        .features {
+            padding: 80px 5%;
+            text-align: center;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            margin-bottom: 50px;
+            font-weight: 800;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+        }
+
+        .feature-card {
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 25px;
+            padding: 40px 20px;
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .feature-icon {
+            font-size: 40px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* ================= قسم لقطات الشاشة (Screenshots) ================= */
+        .screenshots {
+            padding: 80px 5%;
+            text-align: center;
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .screenshots-container {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding: 20px 0;
+            justify-content: center; /* توسيط الصور */
+            scrollbar-width: none;
+        }
+
+        .screenshots-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .screenshot-item {
+            min-width: 250px;
+            height: 500px;
+            background: var(--glass-bg);
+            border: 1px solid var(--glass-border);
+            border-radius: 30px;
+            overflow: hidden;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+        }
+
+        .screenshot-item:hover {
+            transform: scale(1.05);
+        }
+
+        .screenshot-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ================= الفوتر (Footer) ================= */
+        footer {
+            text-align: center;
+            padding: 30px;
+            border-top: 1px solid var(--glass-border);
+            color: var(--text-muted);
+            margin-top: 50px;
+        }
+
+        /* ================= الحركات (Animations) ================= */
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+            100% { transform: translateY(0px); }
+        }
+
+        @keyframes fadeInRight {
+            from { opacity: 0; transform: translateX(50px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        /* ================= التجاوب مع الشاشات الصغيرة (Responsive) ================= */
+        @media (max-width: 768px) {
+            .hero {
+                flex-direction: column;
+                text-align: center;
+                padding-top: 120px;
+            }
+            .hero-content h1 {
+                font-size: 2.5rem;
+            }
+            .phone-mockup {
+                width: 260px;
+                height: 520px;
+            }
+            .screenshots-container {
+                justify-content: flex-start; /* السماح بالتمرير في الشاشات الصغيرة */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- شريط التنقل -->
+    <nav>
+        <div class="logo">Weather <span>Plus</span></div>
+        <!-- زر التحميل العلوي -->
+        <a href="WeatherPlus.apk" download="WeatherPlus.apk" class="nav-btn" onclick="startDownload()">تحميل APK</a>
+    </nav>
+
+    <!-- القسم الرئيسي -->
+    <section class="hero">
+        <div class="hero-content">
+            <h1>الطقس كما لم تره من قبل.</h1>
+            <p>تجربة بصرية مذهلة، دقة متناهية، وتصميم زجاجي يتفاعل مع وقتك. اكتشف حالة الطقس بتفاصيل دقيقة وأيقونات ثلاثية الأبعاد تنبض بالحياة.</p>
+            
+            <!-- زر التحميل الرئيسي -->
+            <a href="WeatherPlus.apk" download="WeatherPlus.apk" class="download-btn" onclick="startDownload()">
+                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path></svg>
+                تحميل التطبيق الآن
+            </a>
+        </div>
+        
+        <div class="hero-image">
+            <!-- هاتف يعرض صورة الشاشة الرئيسية (الغروب) -->
+            <div class="phone-mockup">
+                <img src="screen1.png" alt="Weather Plus Main Screen">
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم المميزات -->
+    <section class="features">
+        <h2 class="section-title">مميزات استثنائية</h2>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">🌅</div>
+                <h3>خلفيات تفاعلية</h3>
+                <p>تتغير ألوان التطبيق تلقائياً لتتناسب مع وقتك (صباح، منتصف النهار، غروب، وليل) لتجربة غامرة.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">☁️</div>
+                <h3>أيقونات 3D حصرية</h3>
+                <p>أيقونات طقس مجسمة ومصممة بدقة متناهية لتعطيك إحساساً بالواقعية والجمال البصري.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">📶</div>
+                <h3>وضع عدم الاتصال</h3>
+                <p>لا إنترنت؟ لا مشكلة! التطبيق يحفظ آخر حالة للطقس ليعرضها لك في أي وقت وفي أي مكان.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">⏱️</div>
+                <h3>توقعات ساعة بساعة</h3>
+                <p>تابع تغيرات الطقس بدقة خلال الـ 24 ساعة القادمة من خلال شريط تمرير زجاجي أنيق.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- قسم لقطات الشاشة -->
+    <section class="screenshots">
+        <h2 class="section-title">نظرة من الداخل</h2>
+        <div class="screenshots-container">
+            <!-- عرض الصور الثلاثة التي قمت بالتقاطها -->
+            <div class="screenshot-item">
+                <img src="screen1.png" alt="الشاشة الرئيسية">
+            </div>
+            <div class="screenshot-item">
+                <img src="screen2.png" alt="شاشة البحث">
+            </div>
+            <div class="screenshot-item">
+                <img src="screen3.png" alt="شاشة الإعدادات">
+            </div>
+        </div>
+    </section>
+
+    <!-- الفوتر -->
+    <footer>
+        <p>&copy; 2024 Weather Plus (أجواء برو). جميع الحقوق محفوظة.</p>
+    </footer>
+
+    <!-- سكربت بسيط لتأثير التحميل -->
+    <script>
+        function startDownload() {
+            alert("شكراً لاختيارك Weather Plus! جاري بدء التحميل...");
+        }
+    </script>
+
+</body>
+</html>
